@@ -1,0 +1,36 @@
+---
+- name: check os family 
+  hosts: worker
+  become: yes
+
+  tasks:
+  - name: check os version
+    debug: var=ansible_os_family
+
+  - block: #APT
+    
+      - name: update
+        apt:
+          upgrade: yes
+          update_cache: yes
+
+      - name: install Nginx
+        apt:
+          name=nginx
+          state=latest
+
+      - name: start nginx
+        systemd:
+          name: nginx
+          enabled: yes
+          state: started
+        notify: reload nginx
+    
+    when: ansible_os_family == "Debian"
+
+  handlers:
+    - name: reload nginx
+      service:
+        name: nginx
+        state: reloaded
+ 

@@ -1,0 +1,136 @@
+БАЗОВАЯ НАСТРОЙКА:
+
+Задать имя устройства
+	hostname "name"
+
+Обеспечить безопасность доступа к пользовательскому режиму EXEC 
+	line console 0 / 
+	password "password"
+	login
+
+Обеспечить безопасность удаленного доступа по протоколам Telnet, SSH 
+	line vty 0 15
+	password "password"
+	login
+
+включение доступа по ssh 
+1) вариант
+	show ip ssh	
+	ip domain-name cisco.com
+	crypto key generate rsa    1024
+	username "username" secret "password"
+	line vty 0 15 	
+		transport input ssh	
+		login local	
+		exit
+	ip ssh version 2
+2)вариант
+	Решение:
+	1. cisco> enable
+	2. cisco# clock set 17:10:00 28 Aug 2009
+	3. cisco# configure terminal
+	4. cisco(config)# ip domain name test.dom
+	5. cisco(config)# crypto key generate rsa
+	6. cisco(config)# service password-encryption
+	7. cisco(config)# username user privilege 15 password 7 Pa$$w0rd
+	8. cisco(config)# aaa new-model
+	9. cisco(config)# line vty 0 4
+	10. cisco(config-line)# transport input ssh
+	11. cisco(config-line)# logging synchronous
+	12. cisco(config-line)# exec-timeout 60 0
+	13. cisco(config-line)# exit
+	14. cisco(config)# exit
+	15. cisco# copy running-config startup-config
+Пояснение:
+	1. Входим в привилегированный режим
+	2. Устанавливаем точное время для генерации ключа
+	3. Входим в режим конфигурирования
+	4. Указываем имя домена (необходимо для генерации ключа)
+	5. Генерируем RSA ключ (необходимо будет выбрать размер ключа)
+	6. Активируем шифрование паролей в конфигурационном файле
+	7. Заводим пользователя с именем user, паролем Pa$$w0rd и уровнем привилегий 15
+	8. Активируем протокол ААА. (до активации ААА в системе обязательно должен быть заведен хотя бы один пользователь)
+	9. Входим в режим конфигурирования терминальных линий с 0 по 4
+	10. Указываем средой доступа через сеть по умолчанию SSH
+	11. Активируем автоматическое поднятие строки после ответа системы на проделанные изменения
+	12. Указываем время таймаута до автоматического закрытия SSH сессии в 60 минут
+	13. Выходим из режима конфигурирования терминальных линий
+	14. Выходим из режима конфигурирования
+	15. Сохраняем конфигурационный файл в энергонезависимую память
+
+Обеспечить безопасность доступа к привилегированному режиму EXEC
+	enable secret "password"
+
+Обеспечить безопасность всех паролей в файле config
+	service password-encryption
+
+Создать баннер с правовым уведомлением
+	banner motd #......#
+
+Настроить административный SVI
+	interface vlan 1
+	ip address ip/mask
+	no shutdown
+
+Сохранить конфигурацию
+	wr/ copy running-config startup-config
+
+
+СОЗДАТЬ ПОЛЬЗОВАТЕЛЯ:
+
+Switch(config)# username "name" privilege "0-15" password "password"
+
+НАСТРОЙКА ПОРТА VLAN:
+	interface fa0/0
+	switchport mode access	
+	switchport access vlan 1
+	/
+	interface fa0/0
+	switchport mode trunk
+	swithchort trunk allowed vlan 2,3,4,5,6
+
+	
+Настройка STP / RSTP:
+	show spanning-tree
+	spaning-tree mode rapid-pvst
+
+Настройка EtherChannel:
+	static:
+		interface range f0/1-2
+		channel-group 1 mode on
+
+	LACP:
+		show etherchannel summary
+		int range f0/1-2
+		channel-protocol lacp
+		channel-group 1 mode active
+		# далее необходимо прописать параменры на другом коммутаторе
+		# рекомендуется использовать параметр ACTIVE с одной стороны с другой PASSIVE	
+		# trunk порт настраивается не на физическом порте, а на логическом (int port-chennel 1)	
+
+DHCP
+	ip dhcp excluded-address 192.168.10.1 192.168.10.9 #диапазон эксклудов (опционально)
+	ip dhcp pool "name"
+		network 192.168.10.0 255.255.255.0	
+		default-router 192.168.10.1
+		DNS-server 192.168.11.5
+		domain-name example.com
+	ip helper-address # перевод dhcp на другой роутер
+
+static route
+	ip route network mask nexhop
+	ip route 0.0.0.0 0.0.0.0 next hop	
+	ip route 172.16.1.0 255.255.255.0 gi 0/0/1 172.16.2.2
+	ip route 0.0.0.0 0.0.0.0 exit-interface
+	# маршрут с плавающей точкой не попадает в таблицу маршрут но есть в конфиге
+	ip route 172.16.1.0 255.255.255.0 172.16.2.2
+	ip route 172.16.1.0 255.255.255.0 10.10.10.2 5
+
+
+
+
+
+
+	
+
+

@@ -1,0 +1,17 @@
+ansible-inventory --graph/list
+ansible all -m ping
+ansible all -m setup
+ansible all -m shell -a 'command' - execute command
+ansible all -m copy -a 'src=hosts.txt dest=/home' - копирование файла      ansible all -m copy -a 'src=hosts.txt dest=/home  mode=777' -b      --- копирование файла
+ansible all -m file -a 'path=/home/hosts.txt state=absent' - delete file
+ansible all -m get_url -a 'url=...  dest=/home ' - wget url
+ansible all -m yum -a 'name=stress state=installed' install
+ansible all -m yum -a 'name=stress state=removed' delete
+ansible all -m uri -a 'url=....' - curl      --- ansible all -m uri -a 'url=....  return_content=yes' - curl
+ansible all -m yum -a 'name=httpd state=latest' install
+ansible all -m service -a 'name=httpd state=started enabled=yes' systemctl enable/start service
+
+
+ansible all -m apt -a "upgrade=yes update_cache=yes"  - upgrade
+ansible all -a "reboot" -s  - reboot
+

@@ -1,0 +1,19 @@
+---
+- name: run Docker
+  hosts: worker
+  become: yes
+   
+  tasks:
+  - name: pull an image
+    docker_image:
+      source: pull
+      name: davidovskiea/kuber
+
+  - name: Create a data container
+    docker_container:
+      name: kub
+      image: davidovskiea/kuber
+      state: started
+      ports:
+       - "8000:8000"
+      container_default_behavior: compatibility
