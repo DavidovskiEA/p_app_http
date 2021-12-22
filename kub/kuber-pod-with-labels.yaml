@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: app-kuber-with-labels
+  labels: 
+    environment: dev 
+    app: http-server
+spec:
+  containers:
+  - name: app-kuber-container
+    image: davidovskiea/kuber:latest
+    ports:
+    - containerPort: 8000
