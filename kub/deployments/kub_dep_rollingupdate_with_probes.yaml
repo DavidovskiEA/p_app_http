@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kuber
+  labels:
+    app: kuber
+spec:
+  replicas: 5
+  minReadySeconds: 5
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  selector:
+    matchExpressions:
+      - key: app
+        operator: In
+        values:
+          - kuber
+          - http-server
+      #- key: env
+      #  operator: Exists
+  template:
+    metadata:
+      labels:
+        app: http-server
+      #  env: dev
+    spec:
+      containers:
+      - name: kuber-app
+        image: bokovets/kuber:v2.0
+        ports:
+        - containerPort: 8000
