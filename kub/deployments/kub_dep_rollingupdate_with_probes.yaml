@@ -32,3 +32,15 @@ spec:
         image: bokovets/kuber:v2.0
         ports:
         - containerPort: 8000
+        readinessProbe:
+          httpGet:
+            path: /randompath
+            port: 8000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /randompath
+            port: 8000
+          initialDelaySeconds: 5
+          periodSeconds: 5

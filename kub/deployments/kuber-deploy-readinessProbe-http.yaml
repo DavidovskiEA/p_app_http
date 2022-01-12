@@ -1,4 +1,3 @@
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -17,7 +16,7 @@ spec:
     spec:
       containers:
       - name: kuber-app
-        image: bakavets/kuber:v1.0-unhealthy
+        image: bakavets/kuber:v1.0 #-unhealthy
         ports:
         - containerPort: 8000
         readinessProbe:
