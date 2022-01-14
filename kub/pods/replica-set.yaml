@@ -21,4 +21,4 @@ spec:
     spec:
       containers:
       - name: kuber-app
-        image: bokovets/kuber
+        image: davidovskiea/kuber

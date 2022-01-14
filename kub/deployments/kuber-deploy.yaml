@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: kuber-app
-        image: bakavets/kuber:v1.0
+        image: davidovskiea/kuber
         ports:
         - containerPort: 8000
 ---
